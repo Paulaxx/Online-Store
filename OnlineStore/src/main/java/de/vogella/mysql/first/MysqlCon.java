@@ -24,7 +24,7 @@ class MysqlCon{
 		ResultSet rs=stmt.executeQuery("select * from users");  
 		while(rs.next())  
 			System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
-		con.close();
+		//con.close();
     }
     
     
