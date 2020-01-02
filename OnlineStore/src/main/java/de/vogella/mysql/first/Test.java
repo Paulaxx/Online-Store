@@ -15,12 +15,9 @@ public class Test extends Application{
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/LogIn.fxml"));
 		AnchorPane anchorPane=loader.load();
-		
 		Controller controller = loader.getController();
-		
 		Scene scene = new Scene(anchorPane);
 		primaryStage.setScene(scene);
-		
 		primaryStage.show();
 		
 	}
