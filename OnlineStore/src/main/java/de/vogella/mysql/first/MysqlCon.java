@@ -5,13 +5,19 @@ class MysqlCon{
 	
 	Connection con;
 	static String logEmail, logPass;
+	static int userId = -1;
 	
 	public MysqlCon() {
-		try{  
-    		Class.forName("com.mysql.cj.jdbc.Driver");  
-			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/store","sqluser","sqluserpw");  
-    	}
-		catch(Exception e){ System.out.println(e);} 
+		try{
+			System.out.println("Connecting to mysql database...");
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/store","client","");
+			System.out.println("Done...");
+		}
+		catch(Exception e){
+			System.out.println("Error connecting to the database!!!");
+			System.out.println(e);
+		}
 	}
 	
 	
@@ -49,11 +55,12 @@ class MysqlCon{
     	stmt.setString(2, user);
     	stmt.setString(3, pass);
     	stmt.execute(); 
-    	int output = stmt.getInt(1);
+    	userId = stmt.getInt(1);
     	
-    	if(output==-1)
+    	if(userId == -1)
     		return false;
-    	return true;
+    	else
+    		return true;
     }
     
     
@@ -73,11 +80,15 @@ class MysqlCon{
     public void showCart() throws SQLException {
     	String product="";
     	Controller.Cart.removeAll(Controller.Cart);
-    	Statement stmt=con.createStatement();  
-		ResultSet rs=stmt.executeQuery("select stock.name, cart.amount, cart.price "
+
+
+		CallableStatement stmt=con.prepareCall(
+				"select stock.name, cart.amount, cart.price "
 				+ "from cart inner join stock where cart.itemId=stock.id and "
-				+ "userId=(select id from users where email like '"+logEmail+"')");
-		product="name"+"\t"+"amount"+"\t"+"price";
+				+ "userId = ?");
+		stmt.setInt(1, userId);
+		ResultSet rs = stmt.executeQuery();
+		product="name"+"\t\t"+"amount"+"\t\t"+"price";
 		Controller.Cart.add(product);
 		while(rs.next()) {
 			product =rs.getString(1)+"\t\t"+rs.getInt(2)+"\t\t"+rs.getInt(3);
