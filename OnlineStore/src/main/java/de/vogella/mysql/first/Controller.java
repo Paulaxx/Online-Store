@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -36,6 +37,8 @@ public class Controller {
 	static ObservableList<String> productsList = FXCollections.observableArrayList();
 	static ObservableList<String> Cart = FXCollections.observableArrayList();
 	
+	Stage primaryStageLog;
+	
 	public void show(ActionEvent event) throws SQLException {
 		
 		MysqlCon con = new MysqlCon();
@@ -47,7 +50,6 @@ public class Controller {
 	public void login(ActionEvent event) throws IOException, SQLException {
 		
 		String userName, password;
-		
 		userName =  txtUserName.getText();
 		password =  txtPassword.getText();
 		
@@ -55,6 +57,10 @@ public class Controller {
 		if(con.checkPassword(userName, password)==true) {
 			lblStatus.setText("Login Success");
 			
+			final Node source = (Node) event.getSource();
+		    final Stage stage = (Stage) source.getScene().getWindow();
+		    stage.close();
+		    
 			Stage primaryStage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(this.getClass().getResource("/fxml/Window.fxml"));
@@ -71,6 +77,10 @@ public class Controller {
 	
 	public void createAcc(ActionEvent event) throws IOException {
 		
+		final Node source = (Node) event.getSource();
+	    final Stage stage = (Stage) source.getScene().getWindow();
+	    stage.close();
+	    
 		Stage primaryStage = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/Register.fxml"));
@@ -93,6 +103,10 @@ public class Controller {
 	
 	public void goToStore(ActionEvent event) throws IOException {
 		
+		final Node source = (Node) event.getSource();
+	    final Stage stage = (Stage) source.getScene().getWindow();
+	    stage.close();
+	    
 		Stage primaryStage = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/Window.fxml"));
@@ -134,6 +148,39 @@ public class Controller {
 		}
 		MysqlCon con = new MysqlCon();
 		con.addToCart(idP, amount);
+		
+	}
+	
+	public void ClientModule(ActionEvent event) throws IOException {
+		
+		final Node source = (Node) event.getSource();
+	    final Stage stage = (Stage) source.getScene().getWindow();
+	    stage.close();
+	    
+		primaryStageLog = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(this.getClass().getResource("/fxml/LogIn.fxml"));
+		AnchorPane anchorPane=loader.load();
+		Controller controller = loader.getController();
+		Scene scene = new Scene(anchorPane);
+		primaryStageLog.setScene(scene);
+		primaryStageLog.show();
+	}
+	
+	public void LogOut(ActionEvent event) throws IOException {
+		
+		final Node source = (Node) event.getSource();
+	    final Stage stage = (Stage) source.getScene().getWindow();
+	    stage.close();
+	    
+		primaryStageLog = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(this.getClass().getResource("/fxml/LogIn.fxml"));
+		AnchorPane anchorPane=loader.load();
+		Controller controller = loader.getController();
+		Scene scene = new Scene(anchorPane);
+		primaryStageLog.setScene(scene);
+		primaryStageLog.show();
 		
 	}
 
