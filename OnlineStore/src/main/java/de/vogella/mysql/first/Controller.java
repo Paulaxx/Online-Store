@@ -192,5 +192,37 @@ public class Controller {
 		primaryStageLog.show();
 		
 	}
+	
+	public void OwnerModule(ActionEvent event) throws IOException {
+		
+		final Node source = (Node) event.getSource();
+	    final Stage stage = (Stage) source.getScene().getWindow();
+	    stage.close();
+	    
+		primaryStageLog = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(this.getClass().getResource("/fxml/OwnerWindow.fxml"));
+		AnchorPane anchorPane=loader.load();
+		Controller controller = loader.getController();
+		Scene scene = new Scene(anchorPane);
+		primaryStageLog.setScene(scene);
+		primaryStageLog.show();
+	}
+	
+	public void AdminModule(ActionEvent event) throws IOException {
+	
+		final Node source = (Node) event.getSource();
+	    final Stage stage = (Stage) source.getScene().getWindow();
+	    stage.close();
+	    
+		primaryStageLog = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(this.getClass().getResource("/fxml/AdminWindow.fxml"));
+		AnchorPane anchorPane=loader.load();
+		Controller controller = loader.getController();
+		Scene scene = new Scene(anchorPane);
+		primaryStageLog.setScene(scene);
+		primaryStageLog.show();
+	}
 
 }

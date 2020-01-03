@@ -4,12 +4,11 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="294.0" prefWidth="529.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.vogella.mysql.first.Controller">
    <children>
       <Button layoutX="81.0" layoutY="177.0" mnemonicParsing="false" onAction="#ClientModule" prefHeight="42.0" prefWidth="79.0" text="Client" />
-      <Button layoutX="225.0" layoutY="177.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="79.0" text="Owner" />
-      <Button layoutX="386.0" layoutY="177.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="71.0" text="Admin" />
+      <Button layoutX="225.0" layoutY="177.0" mnemonicParsing="false" onAction="#OwnerModule" prefHeight="42.0" prefWidth="79.0" text="Owner" />
+      <Button layoutX="386.0" layoutY="177.0" mnemonicParsing="false" onAction="#AdminModule" prefHeight="42.0" prefWidth="71.0" text="Admin" />
       <TextField layoutX="136.0" layoutY="59.0" prefHeight="34.0" prefWidth="257.0" style="-fx-background-color: #6495ED;" text="Select the module in which you want to work" />
    </children>
 </AnchorPane>

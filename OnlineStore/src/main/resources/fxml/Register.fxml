@@ -15,7 +15,7 @@
       <TextField fx:id="txtAdd1" layoutX="115.0" layoutY="277.0" prefWidth="265.0" promptText="address(part1)" />
       <TextField fx:id="txtAdd2" layoutX="115.0" layoutY="318.0" prefWidth="265.0" promptText="address(part2)" />
       <Button fx:id="CreateAcc2Button" layoutX="188.0" layoutY="362.0" mnemonicParsing="false" onAction="#createAcc2" style="-fx-background-color: #6495ED;" text="Create new account" />
-      <Button fx:id="GoButton" layoutX="363.0" layoutY="362.0" mnemonicParsing="false" onAction="#goToStore" text="Go into shop page -&gt;" />
+      <Button fx:id="GoButton" layoutX="417.0" layoutY="362.0" mnemonicParsing="false" onAction="#ClientModule" prefHeight="25.0" prefWidth="63.0" text="Sign in" />
       <PasswordField fx:id="txtPass1" layoutX="116.0" layoutY="110.0" prefHeight="25.0" prefWidth="265.0" promptText="password" />
       <PasswordField fx:id="txtPass2" layoutX="116.0" layoutY="154.0" prefWidth="265.0" promptText="password" />
    </children>
