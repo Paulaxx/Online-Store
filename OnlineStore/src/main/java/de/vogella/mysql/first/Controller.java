@@ -23,13 +23,13 @@ import javafx.stage.Stage;
 public class Controller {
 	
 	@FXML
-	Label lblStatus, lblStatus2;
+	Label lblStatus, lblStatus2, txtOwner, txtAdmin;
 	
 	@FXML
 	TextField txtUserName, txtEmail, txtPass1, txtPass2, txt1Name, txt2Name, txtAdd1, txtAdd2, txtShop;
 	
 	@FXML
-	PasswordField txtPassword;
+	PasswordField txtPassword, txtOwnerPass, txtAdminPass;
 	
 	@FXML
 	ListView<String> LVProducts;
@@ -201,7 +201,7 @@ public class Controller {
 	    
 		primaryStageLog = new Stage();
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(this.getClass().getResource("/fxml/OwnerWindow.fxml"));
+		loader.setLocation(this.getClass().getResource("/fxml/OwnerLogIn.fxml"));
 		AnchorPane anchorPane=loader.load();
 		Controller controller = loader.getController();
 		Scene scene = new Scene(anchorPane);
@@ -217,12 +217,62 @@ public class Controller {
 	    
 		primaryStageLog = new Stage();
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(this.getClass().getResource("/fxml/AdminWindow.fxml"));
+		loader.setLocation(this.getClass().getResource("/fxml/AdminLogIn.fxml"));
 		AnchorPane anchorPane=loader.load();
 		Controller controller = loader.getController();
 		Scene scene = new Scene(anchorPane);
 		primaryStageLog.setScene(scene);
 		primaryStageLog.show();
+	}
+	
+	public void OwnerLogIn(ActionEvent event) throws IOException {
+		
+		String pass=txtOwnerPass.getText();
+		MysqlCon con = new MysqlCon();
+		if(con.checkOwnerPass(pass)==true) {
+			
+			txtOwner.setText("Login Success");
+			
+			final Node source = (Node) event.getSource();
+		    final Stage stage = (Stage) source.getScene().getWindow();
+		    stage.close();
+		    
+			Stage primaryStage = new Stage();
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(this.getClass().getResource("/fxml/OwnerWindow.fxml"));
+			AnchorPane anchorPane=loader.load();
+			Controller controller = loader.getController();
+			Scene scene = new Scene(anchorPane);
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		}
+		else
+			txtOwner.setText("Login Failed");
+	}
+	
+	public void AdminLogIn(ActionEvent event) throws IOException {
+		
+		String pass=txtAdminPass.getText();
+		MysqlCon con = new MysqlCon();
+		if(con.checkAdminPass(pass)==true) {
+			
+			txtAdmin.setText("Login Success");
+			
+			final Node source = (Node) event.getSource();
+		    final Stage stage = (Stage) source.getScene().getWindow();
+		    stage.close();
+		    
+			Stage primaryStage = new Stage();
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(this.getClass().getResource("/fxml/AdminWindow.fxml"));
+			AnchorPane anchorPane=loader.load();
+			Controller controller = loader.getController();
+			Scene scene = new Scene(anchorPane);
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		}
+		else
+			txtOwner.setText("Login Failed");
 	}
 
 }

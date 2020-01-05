@@ -106,5 +106,15 @@ class MysqlCon{
     	stmt.execute(); 
     }
     
+    public boolean checkOwnerPass(String pass) {
+    	//sprawdzanie czy dobre haslo
+    	return true;
+    }
+    
+    public boolean checkAdminPass(String pass) {
+    	//sprawdzanie czy dobre haslo
+    	return true;
+    }
+    
     
 }  
