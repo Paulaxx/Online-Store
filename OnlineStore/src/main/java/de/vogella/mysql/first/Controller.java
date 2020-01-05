@@ -16,11 +16,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-public class Controller {
+public class Controller{
 	
 	@FXML
 	Label lblStatus, lblStatus2, txtOwner, txtAdmin;
@@ -36,6 +37,7 @@ public class Controller {
 	
 	static ObservableList<String> productsList = FXCollections.observableArrayList();
 	static ObservableList<String> Cart = FXCollections.observableArrayList();
+
 	static String userName, password;
 	
 	Stage primaryStageLog;
