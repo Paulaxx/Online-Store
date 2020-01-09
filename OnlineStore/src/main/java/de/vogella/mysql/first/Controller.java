@@ -23,6 +23,8 @@ import javafx.stage.Stage;
 
 public class Controller{
 	
+	public static int basket=0, shop=0;
+	
 	@FXML
 	Label lblStatus, lblStatus2, txtOwner, txtAdmin;
 	
@@ -44,6 +46,8 @@ public class Controller{
 	
 	public void show(ActionEvent event) throws SQLException {
 		
+		shop=1;
+		basket=0;
 		MysqlCon con = new MysqlCon();
 		con.showProducts();
 		LVProducts.setItems(productsList);
@@ -126,6 +130,9 @@ public class Controller{
 	}
 	
 	public void showCart(ActionEvent event) throws SQLException {
+		
+		shop=0;
+		basket=1;
 		MysqlCon con = new MysqlCon();
 		con.showCart();
 		LVProducts.setItems(Cart);
