@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.vogella.mysql.first.Controller">
    <children>
-      <TextField layoutX="226.0" layoutY="152.0" text="admin" />
+      <MenuBar layoutY="3.0" prefHeight="19.0" prefWidth="600.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Clients">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Show" />
+                  <MenuItem mnemonicParsing="false" text="Add" />
+                  <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Backup">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Do" />
+                  <MenuItem mnemonicParsing="false" text="Restore" />
+               </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+      <ListView fx:id="LVAdmin" layoutX="5.0" layoutY="34.0" prefHeight="362.0" prefWidth="592.0" />
    </children>
 </AnchorPane>

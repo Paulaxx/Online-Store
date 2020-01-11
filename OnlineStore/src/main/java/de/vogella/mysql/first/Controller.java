@@ -37,6 +37,12 @@ public class Controller{
 	@FXML
 	ListView<String> LVProducts;
 	
+	@FXML
+	ListView<String> LVOwner;
+	
+	@FXML
+	ListView<String> LVAdmin;
+	
 	static ObservableList<String> productsList = FXCollections.observableArrayList();
 	static ObservableList<String> Cart = FXCollections.observableArrayList();
 
@@ -53,6 +59,16 @@ public class Controller{
 		LVProducts.setItems(productsList);
 		txtShop.setVisible(true);
 	}
+	
+	public void show2(ActionEvent event) throws SQLException {
+		
+		shop=1;
+		basket=0;
+		MysqlCon con = new MysqlCon();
+		con.showProducts();
+		LVOwner.setItems(productsList);
+	}
+	
 	
 	public void login(ActionEvent event) throws IOException, SQLException {
 		
