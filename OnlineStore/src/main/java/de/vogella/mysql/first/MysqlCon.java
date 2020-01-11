@@ -116,5 +116,36 @@ class MysqlCon{
     	return true;
     }
     
+    public String itemName(String s, int size) {
+    	
+    	int i=s.indexOf("\t"),j;
+		String a="";
+		for(j=0;j<i;j++) {
+			a=a+s.charAt(j);
+		}
+		return a;
+    }
+    
+    public void removeFromCart(String s, int size) throws SQLException {
+    	
+    	int id=1; //id rzeczy
+    	String name=itemName(s, size); //nazwa tej rzeczy
+    	String sql="select id from stock where name like '";
+    	sql=sql+name;
+    	sql=sql+"'";
+    	
+    	Statement stmt=con.createStatement();
+		ResultSet rs=stmt.executeQuery(sql);  
+		while(rs.next())  
+			id=rs.getInt(1);
+    	
+    	CallableStatement stmt2=con.prepareCall("{call remove_from_cart(?, ?, ?)}");
+    	stmt2.setString(1, logEmail);
+    	stmt2.setString(2, logPass);
+    	stmt2.setInt(3, id);
+    	stmt2.execute(); 
+    }
+    
+    
     
 }  

@@ -151,21 +151,28 @@ public class Controller{
 	
 	public void selected(MouseEvent event) throws SQLException {
 		String selected = LVProducts.getSelectionModel().getSelectedItem();
+		System.out.println(selected);
 		if(selected == null)
 			return;
-
 		int size = selected.length(), idP, amount = 0;
-		String id = getProductId(selected, size);
-		idP = Integer.parseInt(id);
 		
-		TextInputDialog dialog = new TextInputDialog("amount");
-		dialog.setContentText("Please enter amount:");
-		Optional<String> result = dialog.showAndWait();
-		if (result.isPresent()){
-			amount=Integer.parseInt(result.get());
+		if(shop==1) {
+			String id = getProductId(selected, size);
+			idP = Integer.parseInt(id);
+			
+			TextInputDialog dialog = new TextInputDialog("amount");
+			dialog.setContentText("Please enter amount:");
+			Optional<String> result = dialog.showAndWait();
+			if (result.isPresent()){
+				amount=Integer.parseInt(result.get());
+			}
+			MysqlCon con = new MysqlCon();
+			con.addToCart(idP, amount);
 		}
-		MysqlCon con = new MysqlCon();
-		con.addToCart(idP, amount);
+		else if(basket==1) {
+			MysqlCon con = new MysqlCon();
+			con.removeFromCart(selected, size);
+		}
 		
 	}
 	
