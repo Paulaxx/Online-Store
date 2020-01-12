@@ -145,7 +145,14 @@ class MysqlCon{
     	stmt2.setInt(3, id);
     	stmt2.execute(); 
     }
-    
-    
+
+	public void submitOrder() throws SQLException {
+
+		CallableStatement statement = con.prepareCall("{call place_order(?, ?)}");
+		statement.setString(1, logEmail);
+		statement.setString(2, logPass);
+		statement.execute();
+	}
+
     
 }  

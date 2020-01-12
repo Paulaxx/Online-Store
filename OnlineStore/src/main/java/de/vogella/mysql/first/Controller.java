@@ -11,12 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Control;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -146,7 +141,6 @@ public class Controller{
 	}
 	
 	public void showCart(ActionEvent event) throws SQLException {
-		
 		shop=0;
 		basket=1;
 		MysqlCon con = new MysqlCon();
@@ -154,7 +148,7 @@ public class Controller{
 		LVProducts.setItems(Cart);
 		txtShop.setVisible(false);
 	}
-	
+
 	public String getProductId(String s, int size) {
 		
 		int i=s.indexOf("\t"),j;
@@ -165,7 +159,7 @@ public class Controller{
 		return a;
 	}
 	
-	public void selected(MouseEvent event) throws SQLException {
+	public void selected(MouseEvent event) {
 		String selected = LVProducts.getSelectionModel().getSelectedItem();
 		System.out.println(selected);
 		if(selected == null)
@@ -180,14 +174,45 @@ public class Controller{
 			dialog.setContentText("Please enter amount:");
 			Optional<String> result = dialog.showAndWait();
 			if (result.isPresent()){
-				amount=Integer.parseInt(result.get());
+				try {
+					amount = Integer.parseInt(result.get());
+				}
+				catch(Exception ex){
+					Alert alert = new Alert(Alert.AlertType.INFORMATION);
+					alert.setHeaderText("Incorrect amount");
+					alert.showAndWait();
+					return;
+				}
 			}
+
 			MysqlCon con = new MysqlCon();
-			con.addToCart(idP, amount);
+			try {
+				con.addToCart(idP, amount);
+
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Item was added to your cart");
+				alert.showAndWait();
+			} catch (SQLException e) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Item can't be added to cart!");
+				alert.setContentText(e.getMessage());
+				alert.showAndWait();
+			}
 		}
 		else if(basket==1) {
 			MysqlCon con = new MysqlCon();
-			con.removeFromCart(selected, size);
+			try {
+				con.removeFromCart(selected, size);
+
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Item was removed from your cart");
+				alert.showAndWait();
+			} catch (SQLException e) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Item can't be deleted from cart!");
+				alert.setContentText(e.getMessage());
+				alert.showAndWait();
+			}
 		}
 		
 	}
@@ -312,7 +337,21 @@ public class Controller{
 	}
 	
 	public void submitOrder(ActionEvent event) {
-		
+		MysqlCon con = new MysqlCon();
+		try {
+			con.submitOrder();
+
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Your order was placed");
+			alert.showAndWait();
+		} catch (SQLException e) {
+//			e.printStackTrace();
+
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Placing your order failed");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 	}
 
 }

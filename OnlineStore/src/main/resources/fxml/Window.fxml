@@ -21,7 +21,7 @@
           <Menu mnemonicParsing="false" text="ShoppingCart">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#showCart" text="Show cart" />
-                  <MenuItem fx:id="submitOrder" mnemonicParsing="false" text="Submit order" />
+                  <MenuItem fx:id="submitOrder" onAction="#submitOrder" mnemonicParsing="false" text="Submit order" />
                </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Account">
