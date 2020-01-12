@@ -306,5 +306,13 @@ public class Controller{
 		else
 			txtOwner.setText("Login Failed");
 	}
+	
+	public void showOrders(ActionEvent event) {
+		
+	}
+	
+	public void submitOrder(ActionEvent event) {
+		
+	}
 
 }

@@ -21,11 +21,12 @@
           <Menu mnemonicParsing="false" text="ShoppingCart">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#showCart" text="Show cart" />
+                  <MenuItem fx:id="submitOrder" mnemonicParsing="false" text="Submit order" />
                </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Account">
             <items>
-              <MenuItem mnemonicParsing="false" text="orders" />
+              <MenuItem mnemonicParsing="false" onAction="#showOrders" text="orders" />
             </items>
           </Menu>
         </menus>
