@@ -50,6 +50,7 @@ class MysqlCon{
     public boolean checkPassword(String user, String pass) throws SQLException {
     	logEmail=user;
     	logPass=pass;
+    	System.out.println(logEmail);
     	CallableStatement stmt=con.prepareCall("{?= call verify_user(?, ?)}");
     	stmt.registerOutParameter(1, Types.INTEGER);
     	stmt.setString(2, user);
@@ -152,6 +153,21 @@ class MysqlCon{
 		statement.setString(1, logEmail);
 		statement.setString(2, logPass);
 		statement.execute();
+	}
+	
+	public void showOrder() throws SQLException {
+		
+		String orders="";
+		
+		String sql="select * from view_order_items where userId=";
+		sql=sql+userId;
+		Statement stmt=con.createStatement();
+		ResultSet rs=stmt.executeQuery(sql);  
+		while(rs.next()) {
+			orders=rs.getString(1)+"\t\t"+rs.getInt(2)+"\t\t"+rs.getInt(3)+"\t\t"+rs.getInt(4)+"\t\t"+rs.getInt(5);
+			Controller.Orders.add(orders);
+			orders="";
+		}
 	}
 
     

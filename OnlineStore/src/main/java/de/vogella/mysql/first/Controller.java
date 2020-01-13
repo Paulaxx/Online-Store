@@ -40,6 +40,7 @@ public class Controller{
 	
 	static ObservableList<String> productsList = FXCollections.observableArrayList();
 	static ObservableList<String> Cart = FXCollections.observableArrayList();
+	static ObservableList<String> Orders = FXCollections.observableArrayList();
 
 	static String userName, password;
 	
@@ -332,7 +333,11 @@ public class Controller{
 			txtOwner.setText("Login Failed");
 	}
 	
-	public void showOrders(ActionEvent event) {
+	public void showOrders(ActionEvent event) throws SQLException {
+		
+		MysqlCon con = new MysqlCon();
+		con.showOrder();
+		LVProducts.setItems(Orders);
 		
 	}
 	
