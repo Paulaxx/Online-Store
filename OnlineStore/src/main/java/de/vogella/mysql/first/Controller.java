@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Controller{
@@ -24,7 +25,7 @@ public class Controller{
 	Label lblStatus, lblStatus2, txtOwner, txtAdmin;
 	
 	@FXML
-	TextField txtUserName, txtEmail, txtPass1, txtPass2, txt1Name, txt2Name, txtAdd1, txtAdd2, txtShop;
+	TextField txtUserName, txtEmail, txtPass1, txtPass2, txt1Name, txt2Name, txtAdd1, txtAdd2, txtShop, name, price, available, description;
 	
 	@FXML
 	PasswordField txtPassword, txtOwnerPass, txtAdminPass;
@@ -38,9 +39,13 @@ public class Controller{
 	@FXML
 	ListView<String> LVAdmin;
 	
+	@FXML
+	Text txt;
+	
 	static ObservableList<String> productsList = FXCollections.observableArrayList();
 	static ObservableList<String> Cart = FXCollections.observableArrayList();
 	static ObservableList<String> Orders = FXCollections.observableArrayList();
+	static ObservableList<String> AllOrders = FXCollections.observableArrayList();
 
 	static String userName, password;
 	
@@ -62,6 +67,7 @@ public class Controller{
 		basket=0;
 		MysqlCon con = new MysqlCon();
 		con.showProducts();
+		txt.setVisible(true);
 		LVOwner.setItems(productsList);
 	}
 	
@@ -286,7 +292,7 @@ public class Controller{
 	public void OwnerLogIn(ActionEvent event) throws IOException {
 		
 		String pass=txtOwnerPass.getText();
-		MysqlCon con = new MysqlCon();
+		MysqlConOwner con = new MysqlConOwner();
 		if(con.checkOwnerPass(pass)==true) {
 			
 			txtOwner.setText("Login Success");
@@ -357,6 +363,56 @@ public class Controller{
 			alert.setContentText(e.getMessage());
 			alert.showAndWait();
 		}
+	}
+	
+	public void addProduct(ActionEvent event) throws IOException{
+	    
+		Stage primaryStage = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(this.getClass().getResource("/fxml/NewProductDetails.fxml"));
+		AnchorPane anchorPane=loader.load();
+		Controller controller = loader.getController();
+		Scene scene = new Scene(anchorPane);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+	
+	public void addNewProduct(ActionEvent event) throws SQLException {
+		
+		MysqlConOwner con = new MysqlConOwner();
+		con.addProduct(name.getText(), price.getText(), available.getText(), description.getText());
+	}
+	
+	public int getProductId(String s) {
+		
+		int id,p,j;
+		p=s.indexOf("\t");
+		String a="";
+		for(j=0;j<p;j++) {
+			a=a+s.charAt(j);
+		}
+		id=Integer.parseInt(a);
+		return id;
+		
+	}
+	
+	public void deleteProduct(MouseEvent event) throws SQLException {
+		
+		MysqlConOwner con = new MysqlConOwner();
+		String selected = LVOwner.getSelectionModel().getSelectedItem();
+		System.out.println(selected);
+		if(selected == null)
+			return;
+		int id=getProductId(selected);
+		con.deleteP(id);
+	}
+	
+	public void showAllOrders(ActionEvent event) throws SQLException {
+		
+		MysqlConOwner con = new MysqlConOwner();
+		con.showOrders();
+		txt.setVisible(false);
+		LVOwner.setItems(AllOrders);
 	}
 
 }
