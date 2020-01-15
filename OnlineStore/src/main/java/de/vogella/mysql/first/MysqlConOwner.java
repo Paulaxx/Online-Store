@@ -54,15 +54,26 @@ public class MysqlConOwner {
 	public void showOrders() throws SQLException {
 		
 		String orders="";
-		
-		String sql="select * from view_order_items";
+		Controller.AllOrders.removeAll(Controller.AllOrders);
+		String sql="select * from orders";
 		Statement stmt=con.createStatement();
 		ResultSet rs=stmt.executeQuery(sql);  
 		while(rs.next()) {
-			orders=rs.getString(1)+"\t\t"+rs.getInt(2)+"\t\t"+rs.getInt(3)+"\t\t"+rs.getInt(4)+"\t\t"+rs.getInt(5);
+			orders=rs.getInt(1)+"\t\t"+rs.getInt(2)+"\t\t"+rs.getString(3)+"\t\t"+rs.getDate(4);
 			Controller.AllOrders.add(orders);
 			orders="";
 		}
 	}
+	
+	public void modifyAm(int id, int amount) throws SQLException {
+		
+		Statement stmt=con.createStatement();
+		String sql="update stock set available=";
+		sql=sql+amount;
+		sql=sql+" where id=";
+		sql=sql+id;
+		stmt.executeUpdate(sql); 
+	}
+
 
 }

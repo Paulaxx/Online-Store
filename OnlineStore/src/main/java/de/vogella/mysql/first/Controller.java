@@ -28,6 +28,9 @@ public class Controller{
 	TextField txtUserName, txtEmail, txtPass1, txtPass2, txt1Name, txt2Name, txtAdd1, txtAdd2, txtShop, name, price, available, description;
 	
 	@FXML
+	TextField txtEmail2, txtPass12, txtPass22, txt1Name2, txt2Name2, txtAdd12, txtAdd22;
+	
+	@FXML
 	PasswordField txtPassword, txtOwnerPass, txtAdminPass;
 	
 	@FXML
@@ -46,6 +49,7 @@ public class Controller{
 	static ObservableList<String> Cart = FXCollections.observableArrayList();
 	static ObservableList<String> Orders = FXCollections.observableArrayList();
 	static ObservableList<String> AllOrders = FXCollections.observableArrayList();
+	static ObservableList<String> Clients= FXCollections.observableArrayList();
 
 	static String userName, password;
 	
@@ -400,7 +404,6 @@ public class Controller{
 		
 		MysqlConOwner con = new MysqlConOwner();
 		String selected = LVOwner.getSelectionModel().getSelectedItem();
-		System.out.println(selected);
 		if(selected == null)
 			return;
 		int id=getProductId(selected);
@@ -413,6 +416,78 @@ public class Controller{
 		con.showOrders();
 		txt.setVisible(false);
 		LVOwner.setItems(AllOrders);
+	}
+	
+	public void showClients(ActionEvent event) throws SQLException {
+		
+		MysqlConAdmin con = new MysqlConAdmin();
+		con.showCl();
+		LVAdmin.setItems(Clients);
+	}
+	
+	public int getClId(String s) {
+		
+		int id,p,j;
+		p=s.indexOf("\t");
+		String a="";
+		for(j=0;j<p;j++) {
+			a=a+s.charAt(j);
+		}
+		id=Integer.parseInt(a);
+		return id;
+	}
+	
+	public void deleteClient(MouseEvent event) throws SQLException {
+		
+		MysqlConAdmin con = new MysqlConAdmin();
+		String selected = LVAdmin.getSelectionModel().getSelectedItem();
+		if(selected == null)
+			return;
+		int id=getClId(selected);
+		con.deleteCl(id);
+	}
+	
+	public void addClient(ActionEvent event) throws IOException {
+		
+		Stage primaryStage = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(this.getClass().getResource("/fxml/AddClient.fxml"));
+		AnchorPane anchorPane=loader.load();
+		Controller controller = loader.getController();
+		Scene scene = new Scene(anchorPane);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+	
+	public void AdminAddCl(ActionEvent event) {
+		
+		try{
+			MysqlConAdmin con = new MysqlConAdmin();
+			con.newClient(txtEmail2.getText(), txtPass12.getText(), txtPass22.getText(), 
+					txt1Name2.getText(), txt2Name2.getText(), txtAdd12.getText(), txtAdd22.getText());
+		}
+		catch(SQLException e){
+			
+		}
+	}
+	
+	public void modifyAm(ActionEvent event) throws SQLException {
+		
+		TextInputDialog dialog = new TextInputDialog("ID");
+		dialog.setContentText("Enter id of product, you want to modify:");
+		Optional<String> result = dialog.showAndWait();
+		int id=Integer.parseInt(result.get());
+		System.out.println(id);
+		
+		TextInputDialog dialog2 = new TextInputDialog("New amount");
+		dialog2.setContentText("Enter new amount:");
+		Optional<String> result2 = dialog.showAndWait();
+		int amount = Integer.parseInt(result2.get());
+		System.out.println(amount);
+		
+		MysqlConOwner con = new MysqlConOwner();
+		con.modifyAm(id, amount);
+		
 	}
 
 }
