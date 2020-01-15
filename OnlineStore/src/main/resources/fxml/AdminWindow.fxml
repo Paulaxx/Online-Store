@@ -25,6 +25,6 @@
             </Menu>
         </menus>
       </MenuBar>
-      <ListView fx:id="LVAdmin" layoutX="5.0" layoutY="34.0" prefHeight="362.0" prefWidth="592.0" />
+      <ListView fx:id="LVAdmin" layoutX="5.0" layoutY="78.0" prefHeight="318.0" prefWidth="592.0" />
    </children>
 </AnchorPane>
