@@ -87,7 +87,7 @@ class MysqlCon{
     public void showCart() throws SQLException {
     	String product="";
     	Controller.Cart.removeAll(Controller.Cart);
-
+    	
 
 		CallableStatement stmt=con.prepareCall(
 				"select view_stock.name, cart.amount, cart.price "
@@ -160,7 +160,7 @@ class MysqlCon{
 	public void showOrder() throws SQLException {
 		
 		String orders="";
-		
+		Controller.Orders.removeAll(Controller.Orders);
 		String sql="select * from orders where userId = ";
 		sql=sql+userId;
 		Statement stmt=con.createStatement();
