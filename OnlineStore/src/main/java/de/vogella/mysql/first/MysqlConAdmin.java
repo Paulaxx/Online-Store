@@ -28,6 +28,15 @@ public class MysqlConAdmin {
     	
     }
     
+    
+    public boolean checkAdminPass(String pass) {
+    	if(pass.contentEquals("admin")) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    
 	public void showCl() throws SQLException {
 		
 		String orders="";

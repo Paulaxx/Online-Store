@@ -115,12 +115,6 @@ class MysqlCon{
     	stmt.execute(); 
     }
     
-    
-    public boolean checkAdminPass(String pass) {
-    	//sprawdzanie czy dobre haslo
-    	return true;
-    }
-    
     public String itemName(String s, int size) {
     	
     	int i=s.indexOf("\t"),j;

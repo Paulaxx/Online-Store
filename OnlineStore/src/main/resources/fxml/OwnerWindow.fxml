@@ -21,6 +21,7 @@
           <Menu mnemonicParsing="false" text="Orders">
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#showAllOrders" text="Show all" />
+                  <MenuItem mnemonicParsing="false" onAction="#changeStatus" text="Change status" />
             </items>
           </Menu>
         </menus>

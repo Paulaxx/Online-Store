@@ -30,7 +30,7 @@ public class Controller{
 	TextField txtUserName, txtEmail, txtPass1, txtPass2, txt1Name, txt2Name, txtAdd1, txtAdd2, txtShop, name, price, available, description;
 	
 	@FXML
-	TextField txtEmail2, txtPass12, txtPass22, txt1Name2, txt2Name2, txtAdd12, txtAdd22;
+	TextField txtEmail2, txtPass12, txtPass22, txt1Name2, txt2Name2, txtAdd12, txtAdd22, txtId;
 	
 	@FXML
 	PasswordField txtPassword, txtOwnerPass, txtAdminPass;
@@ -414,7 +414,7 @@ public class Controller{
 	public void AdminLogIn(ActionEvent event) {
 		
 		String pass=txtAdminPass.getText();
-		MysqlCon con = new MysqlCon();
+		MysqlConAdmin con = new MysqlConAdmin();
 		if(con.checkAdminPass(pass)==true) {
 			
 			txtAdmin.setText("Login Success");
@@ -441,7 +441,7 @@ public class Controller{
 			primaryStage.show();
 		}
 		else
-			txtOwner.setText("Login Failed");
+			txtAdmin.setText("Login Failed");
 	}
 	
 	public void showOrders(ActionEvent event) {
@@ -676,6 +676,51 @@ public class Controller{
 			return;
 		}
 
+	}
+	
+	public void changeStatus(ActionEvent event) throws IOException {
+		
+		Stage primaryStage = new Stage();
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(this.getClass().getResource("/fxml/Status.fxml"));
+		AnchorPane anchorPane=loader.load();
+		Controller controller = loader.getController();
+		Scene scene = new Scene(anchorPane);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+	
+	public void waiting(ActionEvent event) throws SQLException {
+		
+		String id=txtId.getText();
+		int idd=Integer.parseInt(id);
+		MysqlConOwner con = new MysqlConOwner();
+		con.changeStatus(idd, "Waiting");
+		
+	}
+	
+	public void shipping(ActionEvent event) throws SQLException {
+		
+		String id=txtId.getText();
+		int idd=Integer.parseInt(id);
+		MysqlConOwner con = new MysqlConOwner();
+		con.changeStatus(idd, "Shipping");
+	}
+	
+	public void completed(ActionEvent event) throws SQLException {
+		
+		String id=txtId.getText();
+		int idd=Integer.parseInt(id);
+		MysqlConOwner con = new MysqlConOwner();
+		con.changeStatus(idd, "Completed");
+	}
+	
+	public void canceled(ActionEvent event) throws SQLException {
+		
+		String id=txtId.getText();
+		int idd=Integer.parseInt(id);
+		MysqlConOwner con = new MysqlConOwner();
+		con.changeStatus(idd, "Canceled");
 	}
 
 }

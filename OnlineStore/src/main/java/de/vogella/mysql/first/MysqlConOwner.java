@@ -25,8 +25,10 @@ public class MysqlConOwner {
     }
     
     public boolean checkOwnerPass(String pass) {
-    	//sprawdzanie czy dobre haslo
-    	return true;
+    	if(pass.contentEquals("1234")) {
+    		return true;
+    	}
+    	return false;
     }
     
 	public void addProduct(String name, String price, String available, String description) throws SQLException {
@@ -88,6 +90,20 @@ public class MysqlConOwner {
 			Controller.Details.add(product);
 		}
 		
+	}
+	
+	public void changeStatus(int id, String s) throws SQLException {
+		
+		String sql="update orders set status = ? where id= ?";
+		PreparedStatement preparedStatement = con.prepareStatement(sql);
+		preparedStatement.setString(1, s);
+		preparedStatement.setInt(2, id);
+		preparedStatement.executeUpdate();
+		/*CallableStatement stmt=con.prepareCall(
+				"update orders set status = ? where id= ?");
+		stmt.setString(1, s);
+		stmt.setInt(2, id);
+		ResultSet rs = stmt.executeUpdate();*/
 	}
 
 
