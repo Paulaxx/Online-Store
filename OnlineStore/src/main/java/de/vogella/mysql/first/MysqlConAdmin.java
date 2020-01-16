@@ -39,11 +39,12 @@ public class MysqlConAdmin {
     
 	public void showCl() throws SQLException {
 		
-		String orders="";
+		String orders="id"+"\t\t"+"email"+"\t\t"+"firstName"+"\t\t"+"secondName"+"\t\t"+"address1"+"\t\t"+"address2";
 		Controller.Clients.removeAll(Controller.Clients);
 		String sql="select * from users";
 		Statement stmt=con.createStatement();
 		ResultSet rs=stmt.executeQuery(sql);
+		Controller.Clients.add(orders);
 		while(rs.next()) {
 			orders=rs.getInt(1)+"\t\t"+rs.getString(2)+"\t\t"+rs.getString(4)+"\t\t"+rs.getString(5)+"\t\t"+rs.getString(6)+"\t\t"+rs.getString(7);
 			Controller.Clients.add(orders);

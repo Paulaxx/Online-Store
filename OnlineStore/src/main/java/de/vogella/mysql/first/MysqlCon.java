@@ -35,11 +35,12 @@ class MysqlCon{
     }
     
     public void showProducts() throws SQLException {
-    	String product="";
+    	String product="name"+"\t\t"+"amount"+"\t\t"+"price"+"\t\t"+"description";
     	Controller.productsList.removeAll(Controller.productsList);
     	Controller.productsIdList.clear();
     	Statement stmt=con.createStatement();  
 		ResultSet rs=stmt.executeQuery("select * from view_stock");
+		Controller.productsList.add(product);
 		while(rs.next()) {
 			product =rs.getString(2)+"\t\t"+rs.getString(3)+"\t\t"+rs.getString(4)+"\t\t"+rs.getString(5);
 			Controller.productsList.add(product);
@@ -144,9 +145,9 @@ class MysqlCon{
 	
 	public void showOrder() throws SQLException {
 		
-		String orders="";
+		String orders="id"+"\t\t"+"status"+"\t\t"+"date"+"\t\t\t\t"+"price";
 		Controller.Orders.removeAll(Controller.Orders);
-		
+		Controller.Orders.add(orders);
 		String sql="select * from view_orders where userId = ";
 		sql=sql+userId;
 		Statement stmt=con.createStatement();

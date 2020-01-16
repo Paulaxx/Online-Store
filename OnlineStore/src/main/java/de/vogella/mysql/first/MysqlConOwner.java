@@ -51,11 +51,12 @@ public class MysqlConOwner {
 	
 	public void showOrders() throws SQLException {
 		
-		String orders="";
+		String orders="id"+"\t\t"+"clientId"+"\t\t"+"status"+"\t\t"+"date";
 		Controller.AllOrders.removeAll(Controller.AllOrders);
 		String sql="select * from orders";
 		Statement stmt=con.createStatement();
 		ResultSet rs=stmt.executeQuery(sql);
+		Controller.AllOrders.add(orders);
 		while(rs.next()) {
 			orders=rs.getInt(1)+"\t\t"+rs.getInt(2)+"\t\t"+rs.getString(3)+"\t\t"+rs.getDate(4);
 			Controller.AllOrders.add(orders);
