@@ -20,7 +20,8 @@ import javafx.stage.Stage;
 
 public class Controller{
 	
-	public static int basket=0, shop=0;
+	public static int basket=0, shop=0, orders=0;
+	public static int products=0, order=0;
 	
 	@FXML
 	Label lblStatus, lblStatus2, txtOwner, txtAdmin;
@@ -53,11 +54,11 @@ public class Controller{
 	static ObservableList<String> Orders = FXCollections.observableArrayList();
 	static ObservableList<String> AllOrders = FXCollections.observableArrayList();
 	static ObservableList<String> Clients = FXCollections.observableArrayList();
+	static ObservableList<String> Details = FXCollections.observableArrayList();
 
 //	final ObservableList<StockItem> data = FXCollections.observableArrayList(
 //			new StockItem(0, "namee", "0 groszy kurnaaa", "no")
 //	);
-
 
 	static String userName, password;
 	
@@ -67,6 +68,7 @@ public class Controller{
 		
 		shop=1;
 		basket=0;
+		orders=0;
 		MysqlCon con = new MysqlCon();
 		con.showProducts();
 		LVProducts.setItems(productsList);
@@ -75,8 +77,8 @@ public class Controller{
 	
 	public void show2(ActionEvent event) throws SQLException {
 		
-		shop=1;
-		basket=0;
+		products=1;
+		order=0;
 		MysqlCon con = new MysqlCon();
 		con.showProducts();
 		txt.setVisible(true);
@@ -190,6 +192,7 @@ public class Controller{
 	public void showCart(ActionEvent event) {
 		shop=0;
 		basket=1;
+		orders=0;
 		MysqlCon con = new MysqlCon();
 		try {
 			con.showCart();
@@ -203,13 +206,14 @@ public class Controller{
 		txtShop.setVisible(false);
 	}
 	
-	public void selected(MouseEvent event) {
+	public void selected(MouseEvent event) throws SQLException {
 		String selected = LVProducts.getSelectionModel().getSelectedItem();
 		System.out.println(selected);
 		if(selected == null) {
 			return;
 		}
 		int selectedId = LVProducts.getSelectionModel().getSelectedIndex();
+		System.out.println(selectedId);
 
 
 		if(shop==1) {
@@ -266,8 +270,16 @@ public class Controller{
 				alert.showAndWait();
 			}
 		}
+		else if(orders==1) {
+			orders=0;
+			MysqlCon con = new MysqlCon();
+			int id=selectedId+1;
+			con.orderDetails(id);
+			LVProducts.setItems(Details);
+		}
 		
 	}
+	
 	
 	public void ClientModule(ActionEvent event) {
 		
@@ -434,6 +446,9 @@ public class Controller{
 	
 	public void showOrders(ActionEvent event) {
 		
+		shop=0;
+		basket=0;
+		orders=1;
 		MysqlCon con = new MysqlCon();
 		try {
 			con.showOrder();
@@ -496,28 +511,39 @@ public class Controller{
 		}
 	}
 	
-	public void deleteProduct(MouseEvent event){
+	public void deleteProduct(MouseEvent event) throws SQLException{
 		
 		MysqlConOwner con = new MysqlConOwner();
 		Integer selectedIndex = LVOwner.getSelectionModel().getSelectedIndex();
 		if(selectedIndex == null)
 			return;
 		int id = productsIdList.get(selectedIndex);
+		
+		if(products==1) {
+			
+			try {
+				con.deleteP(id);
+			} catch (SQLException e) {
+				System.out.println("ERRRRRROR: " + e.getMessage());
 
-		try {
-			con.deleteP(id);
-		} catch (SQLException e) {
-			System.out.println("ERRRRRROR: " + e.getMessage());
-
-			Alert alert = new Alert(Alert.AlertType.INFORMATION);
-			alert.setHeaderText("Error deleting item");
-			alert.setContentText(e.getMessage());
-			alert.showAndWait();
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Error deleting item");
+				alert.setContentText(e.getMessage());
+				alert.showAndWait();
+			}
 		}
+		else if(order==1) {
+			
+			con.orderDetails(id);
+			LVOwner.setItems(Details);
+		}
+
 	}
 	
 	public void showAllOrders(ActionEvent event){
 		
+		products=0;
+		order=1;
 		MysqlConOwner con = new MysqlConOwner();
 		try {
 			con.showOrders();

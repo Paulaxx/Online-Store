@@ -71,6 +71,24 @@ public class MysqlConOwner {
 
 		System.out.println(preparedStatement.execute());
 	}
+	
+	public void orderDetails(int id) throws SQLException {
+		
+		Controller.Details.removeAll(Controller.Details);
+		
+		CallableStatement stmt=con.prepareCall(
+				"select * from view_order_items where orderId= ?");
+		stmt.setInt(1, id);
+		ResultSet rs = stmt.executeQuery();
+		String product="";
+		//String product="name"+"\t\t"+"amount"+"\t\t"+"price";
+		//Controller.Cart.add(product);
+		while(rs.next()) {
+			product = rs.getString(1)+"\t\t"+rs.getInt(4)+"\t\t"+rs.getString(5);
+			Controller.Details.add(product);
+		}
+		
+	}
 
 
 }
