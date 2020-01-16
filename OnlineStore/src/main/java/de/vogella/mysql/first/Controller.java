@@ -49,7 +49,12 @@ public class Controller{
 	static ObservableList<String> Cart = FXCollections.observableArrayList();
 	static ObservableList<String> Orders = FXCollections.observableArrayList();
 	static ObservableList<String> AllOrders = FXCollections.observableArrayList();
-	static ObservableList<String> Clients= FXCollections.observableArrayList();
+	static ObservableList<String> Clients = FXCollections.observableArrayList();
+
+//	final ObservableList<StockItem> data = FXCollections.observableArrayList(
+//			new StockItem(0, "namee", "0 groszy kurnaaa", "no")
+//	);
+
 
 	static String userName, password;
 	
@@ -360,8 +365,6 @@ public class Controller{
 			alert.setHeaderText("Your order was placed");
 			alert.showAndWait();
 		} catch (SQLException e) {
-//			e.printStackTrace();
-
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
 			alert.setHeaderText("Placing your order failed");
 			alert.setContentText(e.getMessage());
@@ -471,23 +474,58 @@ public class Controller{
 		}
 	}
 	
-	public void modifyAm(ActionEvent event) throws SQLException {
+	public void modifyAm(ActionEvent event) {
 		
 		TextInputDialog dialog = new TextInputDialog("ID");
 		dialog.setContentText("Enter id of product, you want to modify:");
 		Optional<String> result = dialog.showAndWait();
-		int id=Integer.parseInt(result.get());
+
+		if(!result.isPresent())
+			return;
+
+		int id = 0;
+		try {
+			id = Integer.parseInt(result.get());
+		} catch (Exception e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setHeaderText("Incorrect ID");
+			alert.showAndWait();
+			return;
+		}
+
 		System.out.println(id);
 		
-		TextInputDialog dialog2 = new TextInputDialog("New amount");
+		TextInputDialog dialog2 = new TextInputDialog("1");
 		dialog2.setContentText("Enter new amount:");
-		Optional<String> result2 = dialog.showAndWait();
-		int amount = Integer.parseInt(result2.get());
+		Optional<String> result2 = dialog2.showAndWait();
+
+		if(!result2.isPresent())
+			return;
+
+		int amount = 0;
+		try {
+			amount = Integer.parseInt(result2.get());
+		} catch (NumberFormatException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setHeaderText("Incorrect amount");
+			alert.showAndWait();
+			return;
+		}
 		System.out.println(amount);
 		
 		MysqlConOwner con = new MysqlConOwner();
-		con.modifyAm(id, amount);
-		
+		try {
+			con.modifyAm(id, amount);
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setHeaderText("Error setting new amount");
+			alert.setContentText(e.getMessage());
+			System.out.println(e.getMessage());
+			alert.showAndWait();
+
+			return;
+		}
+
 	}
 
 }

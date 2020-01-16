@@ -38,9 +38,9 @@ class MysqlCon{
     	String product="";
     	Controller.productsList.removeAll(Controller.productsList);
     	Statement stmt=con.createStatement();  
-		ResultSet rs=stmt.executeQuery("select * from stock");
+		ResultSet rs=stmt.executeQuery("select * from view_stock");
 		while(rs.next()) {
-			product =rs.getInt(1)+"\t\t"+ rs.getString(2)+"\t\t"+rs.getInt(3)+"\t\t"+rs.getInt(4)+"\t\t"+rs.getString(5);
+			product =rs.getInt(1)+"\t\t"+ rs.getString(2)+"\t\t"+rs.getString(3)+"\t\t"+rs.getString(4);
 			Controller.productsList.add(product);
 			product="";
 		}
@@ -67,10 +67,16 @@ class MysqlCon{
     
     public boolean newClient(String email, String pass, String pass2, String firstName, String lastName, String add1, String add2) throws SQLException {
     	if(pass.contentEquals(pass2)) {
-    		Statement stmt=con.createStatement(); 
-        	String sql="insert into users(email, password, firstName, lastName, addressLine1, addressLine2) values ('"+email+"', '"+pass+"', '"+firstName+"', '"+lastName+"', '"+add1+"', '"+add2+"')";
-        	stmt.executeUpdate(sql);
-        	System.out.println("done");
+//    		Statement stmt=con.createStatement();
+        	final String SQL_INSERT = "insert into users(email, password, firstName, lastName, addressLine1, addressLine2) values (?, ?, ?, ?, ?, ?)";
+			PreparedStatement preparedStatement = con.prepareStatement(SQL_INSERT);
+			preparedStatement.setString(1, email);
+			preparedStatement.setString(2, pass);
+			preparedStatement.setString(3, firstName);
+			preparedStatement.setString(4, lastName);
+			preparedStatement.setString(5, add1);
+			preparedStatement.setString(6, add2);
+			preparedStatement.execute();
         	logEmail=email;
         	logPass=pass;
         	return true;
@@ -84,8 +90,8 @@ class MysqlCon{
 
 
 		CallableStatement stmt=con.prepareCall(
-				"select stock.name, cart.amount, cart.price "
-				+ "from cart inner join stock where cart.itemId=stock.id and "
+				"select view_stock.name, cart.amount, cart.price "
+				+ "from cart inner join view_stock where cart.itemId = view_stock.id and "
 				+ "userId = ?");
 		stmt.setInt(1, userId);
 		ResultSet rs = stmt.executeQuery();
@@ -127,7 +133,7 @@ class MysqlCon{
     	
     	int id=1; //id rzeczy
     	String name=itemName(s, size); //nazwa tej rzeczy
-    	String sql="select id from stock where name like '";
+    	String sql="select id from view_stock where name like '";
     	sql=sql+name;
     	sql=sql+"'";
     	
@@ -155,12 +161,12 @@ class MysqlCon{
 		
 		String orders="";
 		
-		String sql="select * from view_order_items where userId=";
+		String sql="select * from orders where userId = ";
 		sql=sql+userId;
 		Statement stmt=con.createStatement();
 		ResultSet rs=stmt.executeQuery(sql);  
 		while(rs.next()) {
-			orders=rs.getString(1)+"\t\t"+rs.getInt(2)+"\t\t"+rs.getInt(3)+"\t\t"+rs.getInt(4)+"\t\t"+rs.getInt(5);
+			orders=rs.getString(3)+"\t\t"+rs.getDate(4);
 			Controller.Orders.add(orders);
 			orders="";
 		}

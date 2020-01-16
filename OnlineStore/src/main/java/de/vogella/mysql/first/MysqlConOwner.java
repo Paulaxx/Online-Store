@@ -1,10 +1,6 @@
 package de.vogella.mysql.first;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class MysqlConOwner {
 	
@@ -57,7 +53,7 @@ public class MysqlConOwner {
 		Controller.AllOrders.removeAll(Controller.AllOrders);
 		String sql="select * from orders";
 		Statement stmt=con.createStatement();
-		ResultSet rs=stmt.executeQuery(sql);  
+		ResultSet rs=stmt.executeQuery(sql);
 		while(rs.next()) {
 			orders=rs.getInt(1)+"\t\t"+rs.getInt(2)+"\t\t"+rs.getString(3)+"\t\t"+rs.getDate(4);
 			Controller.AllOrders.add(orders);
@@ -67,12 +63,13 @@ public class MysqlConOwner {
 	
 	public void modifyAm(int id, int amount) throws SQLException {
 		
-		Statement stmt=con.createStatement();
-		String sql="update stock set available=";
-		sql=sql+amount;
-		sql=sql+" where id=";
-		sql=sql+id;
-		stmt.executeUpdate(sql); 
+//		Statement stmt=con.createStatement();
+		final String SQL_UPDATE = "update stock set available = ? where id = ?";
+		PreparedStatement preparedStatement = con.prepareStatement(SQL_UPDATE);
+		preparedStatement.setInt(1, amount);
+		preparedStatement.setInt(2, id);
+
+		System.out.println(preparedStatement.execute());
 	}
 
 
