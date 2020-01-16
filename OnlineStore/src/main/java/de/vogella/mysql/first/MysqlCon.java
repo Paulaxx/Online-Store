@@ -37,11 +37,13 @@ class MysqlCon{
     public void showProducts() throws SQLException {
     	String product="";
     	Controller.productsList.removeAll(Controller.productsList);
+    	Controller.productsIdList.clear();
     	Statement stmt=con.createStatement();  
 		ResultSet rs=stmt.executeQuery("select * from view_stock");
 		while(rs.next()) {
-			product =rs.getInt(1)+"\t\t"+ rs.getString(2)+"\t\t"+rs.getString(3)+"\t\t"+rs.getString(4);
+			product =rs.getString(2)+"\t\t"+rs.getString(3)+"\t\t"+rs.getString(4)+"\t\t"+rs.getString(5);
 			Controller.productsList.add(product);
+			Controller.productsIdList.add(rs.getInt(1));
 			product="";
 		}
     }
@@ -86,11 +88,11 @@ class MysqlCon{
     
     public void showCart() throws SQLException {
     	String product="";
-    	Controller.Cart.removeAll(Controller.Cart);
-
+		Controller.Cart.removeAll(Controller.Cart);
+		Controller.CartIds.clear();
 
 		CallableStatement stmt=con.prepareCall(
-				"select view_stock.name, cart.amount, cart.price "
+				"select view_stock.id, view_stock.name, cart.amount, cart.price "
 				+ "from cart inner join view_stock where cart.itemId = view_stock.id and "
 				+ "userId = ?");
 		stmt.setInt(1, userId);
@@ -98,9 +100,9 @@ class MysqlCon{
 		product="name"+"\t\t"+"amount"+"\t\t"+"price";
 		Controller.Cart.add(product);
 		while(rs.next()) {
-			product =rs.getString(1)+"\t\t"+rs.getInt(2)+"\t\t"+rs.getInt(3);
+			product = rs.getString(2)+"\t\t"+rs.getInt(3)+"\t\t"+rs.getInt(4);
 			Controller.Cart.add(product);
-			product="";
+			Controller.CartIds.add(rs.getInt(1));
 		}
     }
     
@@ -129,19 +131,8 @@ class MysqlCon{
 		return a;
     }
     
-    public void removeFromCart(String s, int size) throws SQLException {
-    	
-    	int id=1; //id rzeczy
-    	String name=itemName(s, size); //nazwa tej rzeczy
-    	String sql="select id from view_stock where name like '";
-    	sql=sql+name;
-    	sql=sql+"'";
-    	
-    	Statement stmt=con.createStatement();
-		ResultSet rs=stmt.executeQuery(sql);  
-		while(rs.next())  
-			id=rs.getInt(1);
-    	
+    public void removeFromCart(int id) throws SQLException {
+
     	CallableStatement stmt2=con.prepareCall("{call remove_from_cart(?, ?, ?)}");
     	stmt2.setString(1, logEmail);
     	stmt2.setString(2, logPass);
@@ -161,14 +152,13 @@ class MysqlCon{
 		
 		String orders="";
 		
-		String sql="select * from orders where userId = ";
+		String sql="select * from view_orders where userId = ";
 		sql=sql+userId;
 		Statement stmt=con.createStatement();
 		ResultSet rs=stmt.executeQuery(sql);  
 		while(rs.next()) {
-			orders=rs.getString(3)+"\t\t"+rs.getDate(4);
+			orders=rs.getString(3)+"\t\t"+rs.getDate(4) + "\t\t" + rs.getString(5);
 			Controller.Orders.add(orders);
-			orders="";
 		}
 	}
 

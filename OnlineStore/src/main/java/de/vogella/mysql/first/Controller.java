@@ -2,6 +2,7 @@ package de.vogella.mysql.first;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javafx.collections.FXCollections;
@@ -44,9 +45,11 @@ public class Controller{
 	
 	@FXML
 	Text txt;
-	
+
 	static ObservableList<String> productsList = FXCollections.observableArrayList();
+	static ArrayList<Integer> productsIdList = new ArrayList<>();
 	static ObservableList<String> Cart = FXCollections.observableArrayList();
+	static ArrayList<Integer> CartIds = new ArrayList<>();
 	static ObservableList<String> Orders = FXCollections.observableArrayList();
 	static ObservableList<String> AllOrders = FXCollections.observableArrayList();
 	static ObservableList<String> Clients = FXCollections.observableArrayList();
@@ -81,35 +84,47 @@ public class Controller{
 	}
 	
 	
-	public void login(ActionEvent event) throws IOException, SQLException {
+	public void login(ActionEvent event){
 		
 		userName =  txtUserName.getText();
 		password =  txtPassword.getText();
 
 		System.out.println("Creating mysqlcon");
 		MysqlCon con = new MysqlCon();
-		if(con.checkPassword(userName, password)==true) {
-			lblStatus.setText("Login Success");
-			
-			final Node source = (Node) event.getSource();
-		    final Stage stage = (Stage) source.getScene().getWindow();
-		    stage.close();
-		    
-			Stage primaryStage = new Stage();
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(this.getClass().getResource("/fxml/Window.fxml"));
-			AnchorPane anchorPane=loader.load();
-			Controller controller = loader.getController();
-			Scene scene = new Scene(anchorPane);
-			primaryStage.setScene(scene);
-			primaryStage.show();
-			
+		try {
+			if(con.checkPassword(userName, password)==true) {
+				lblStatus.setText("Login Success");
+
+				final Node source = (Node) event.getSource();
+				final Stage stage = (Stage) source.getScene().getWindow();
+				stage.close();
+
+				Stage primaryStage = new Stage();
+				FXMLLoader loader = new FXMLLoader();
+				loader.setLocation(this.getClass().getResource("/fxml/Window.fxml"));
+				AnchorPane anchorPane=loader.load();
+				Controller controller = loader.getController();
+				Scene scene = new Scene(anchorPane);
+				primaryStage.setScene(scene);
+				primaryStage.show();
+
+			}
+			else
+				lblStatus.setText("Login Failed");
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Io exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
 		}
-		else
-			lblStatus.setText("Login Failed");
 	}
 	
-	public void createAcc(ActionEvent event) throws IOException {
+	public void createAcc(ActionEvent event) {
 		
 		final Node source = (Node) event.getSource();
 	    final Stage stage = (Stage) source.getScene().getWindow();
@@ -118,7 +133,15 @@ public class Controller{
 		Stage primaryStage = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/Register.fxml"));
-		AnchorPane anchorPane=loader.load();
+		AnchorPane anchorPane= null;
+		try {
+			anchorPane = loader.load();
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Io exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		Controller controller = loader.getController();
 		Scene scene = new Scene(anchorPane);
 		primaryStage.setScene(scene);
@@ -126,7 +149,7 @@ public class Controller{
 		
 	}
 	
-	public void createAcc2(ActionEvent event) throws SQLException {
+	public void createAcc2(ActionEvent event) {
 
 		try{
 			MysqlCon con = new MysqlCon();
@@ -140,7 +163,7 @@ public class Controller{
 		}
 	}
 	
-	public void goToStore(ActionEvent event) throws IOException {
+	public void goToStore(ActionEvent event) {
 		
 		final Node source = (Node) event.getSource();
 	    final Stage stage = (Stage) source.getScene().getWindow();
@@ -149,61 +172,70 @@ public class Controller{
 		Stage primaryStage = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/Window.fxml"));
-		AnchorPane anchorPane=loader.load();
+		AnchorPane anchorPane= null;
+		try {
+			anchorPane = loader.load();
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Io exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		Controller controller = loader.getController();
 		Scene scene = new Scene(anchorPane);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
 	
-	public void showCart(ActionEvent event) throws SQLException {
+	public void showCart(ActionEvent event) {
 		shop=0;
 		basket=1;
 		MysqlCon con = new MysqlCon();
-		con.showCart();
+		try {
+			con.showCart();
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		LVProducts.setItems(Cart);
 		txtShop.setVisible(false);
-	}
-
-	public String getProductId(String s, int size) {
-		
-		int i=s.indexOf("\t"),j;
-		String a="";
-		for(j=0;j<i;j++) {
-			a=a+s.charAt(j);
-		}
-		return a;
 	}
 	
 	public void selected(MouseEvent event) {
 		String selected = LVProducts.getSelectionModel().getSelectedItem();
 		System.out.println(selected);
-		if(selected == null)
+		if(selected == null) {
 			return;
-		int size = selected.length(), idP, amount = 0;
-		
+		}
+		int selectedId = LVProducts.getSelectionModel().getSelectedIndex();
+
+
 		if(shop==1) {
-			String id = getProductId(selected, size);
-			idP = Integer.parseInt(id);
-			
+			int id = productsIdList.get(selectedId);
+
 			TextInputDialog dialog = new TextInputDialog("amount");
 			dialog.setContentText("Please enter amount:");
 			Optional<String> result = dialog.showAndWait();
-			if (result.isPresent()){
-				try {
-					amount = Integer.parseInt(result.get());
-				}
-				catch(Exception ex){
-					Alert alert = new Alert(Alert.AlertType.INFORMATION);
-					alert.setHeaderText("Incorrect amount");
-					alert.showAndWait();
-					return;
-				}
+
+			if(!result.isPresent())
+				return;
+
+			int amount;
+			try {
+				amount = Integer.parseInt(result.get());
+			}
+			catch(Exception ex){
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Incorrect amount");
+				alert.showAndWait();
+				return;
 			}
 
 			MysqlCon con = new MysqlCon();
 			try {
-				con.addToCart(idP, amount);
+				con.addToCart(id, amount);
 
 				Alert alert = new Alert(Alert.AlertType.INFORMATION);
 				alert.setHeaderText("Item was added to your cart");
@@ -217,8 +249,12 @@ public class Controller{
 		}
 		else if(basket==1) {
 			MysqlCon con = new MysqlCon();
+
+			int id = Controller.CartIds.get(selectedId - 1);
+			System.out.println("id is = " +  id);
+
 			try {
-				con.removeFromCart(selected, size);
+				con.removeFromCart(id);
 
 				Alert alert = new Alert(Alert.AlertType.INFORMATION);
 				alert.setHeaderText("Item was removed from your cart");
@@ -233,7 +269,7 @@ public class Controller{
 		
 	}
 	
-	public void ClientModule(ActionEvent event) throws IOException {
+	public void ClientModule(ActionEvent event) {
 		
 		final Node source = (Node) event.getSource();
 	    final Stage stage = (Stage) source.getScene().getWindow();
@@ -242,14 +278,22 @@ public class Controller{
 		primaryStageLog = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/LogIn.fxml"));
-		AnchorPane anchorPane = loader.load();
+		AnchorPane anchorPane = null;
+		try {
+			anchorPane = loader.load();
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Io exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		Controller controller = loader.getController();
 		Scene scene = new Scene(anchorPane);
 		primaryStageLog.setScene(scene);
 		primaryStageLog.show();
 	}
 	
-	public void LogOut(ActionEvent event) throws IOException {
+	public void LogOut(ActionEvent event) {
 		
 		final Node source = (Node) event.getSource();
 	    final Stage stage = (Stage) source.getScene().getWindow();
@@ -258,7 +302,15 @@ public class Controller{
 		primaryStageLog = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/LogIn.fxml"));
-		AnchorPane anchorPane=loader.load();
+		AnchorPane anchorPane= null;
+		try {
+			anchorPane = loader.load();
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Io exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		Controller controller = loader.getController();
 		Scene scene = new Scene(anchorPane);
 		primaryStageLog.setScene(scene);
@@ -266,7 +318,7 @@ public class Controller{
 		
 	}
 	
-	public void OwnerModule(ActionEvent event) throws IOException {
+	public void OwnerModule(ActionEvent event) {
 		
 		final Node source = (Node) event.getSource();
 	    final Stage stage = (Stage) source.getScene().getWindow();
@@ -275,14 +327,22 @@ public class Controller{
 		primaryStageLog = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/OwnerLogIn.fxml"));
-		AnchorPane anchorPane=loader.load();
+		AnchorPane anchorPane= null;
+		try {
+			anchorPane = loader.load();
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Io exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		Controller controller = loader.getController();
 		Scene scene = new Scene(anchorPane);
 		primaryStageLog.setScene(scene);
 		primaryStageLog.show();
 	}
 	
-	public void AdminModule(ActionEvent event) throws IOException {
+	public void AdminModule(ActionEvent event) {
 	
 		final Node source = (Node) event.getSource();
 	    final Stage stage = (Stage) source.getScene().getWindow();
@@ -291,14 +351,22 @@ public class Controller{
 		primaryStageLog = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/AdminLogIn.fxml"));
-		AnchorPane anchorPane=loader.load();
+		AnchorPane anchorPane= null;
+		try {
+			anchorPane = loader.load();
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Io exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		Controller controller = loader.getController();
 		Scene scene = new Scene(anchorPane);
 		primaryStageLog.setScene(scene);
 		primaryStageLog.show();
 	}
 	
-	public void OwnerLogIn(ActionEvent event) throws IOException {
+	public void OwnerLogIn(ActionEvent event) {
 		
 		String pass=txtOwnerPass.getText();
 		MysqlConOwner con = new MysqlConOwner();
@@ -313,7 +381,15 @@ public class Controller{
 			Stage primaryStage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(this.getClass().getResource("/fxml/OwnerWindow.fxml"));
-			AnchorPane anchorPane=loader.load();
+			AnchorPane anchorPane= null;
+			try {
+				anchorPane = loader.load();
+			} catch (IOException e) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Io exception");
+				alert.setContentText(e.getMessage());
+				alert.showAndWait();
+			}
 			Controller controller = loader.getController();
 			Scene scene = new Scene(anchorPane);
 			primaryStage.setScene(scene);
@@ -323,7 +399,7 @@ public class Controller{
 			txtOwner.setText("Login Failed");
 	}
 	
-	public void AdminLogIn(ActionEvent event) throws IOException {
+	public void AdminLogIn(ActionEvent event) {
 		
 		String pass=txtAdminPass.getText();
 		MysqlCon con = new MysqlCon();
@@ -338,7 +414,15 @@ public class Controller{
 			Stage primaryStage = new Stage();
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(this.getClass().getResource("/fxml/AdminWindow.fxml"));
-			AnchorPane anchorPane=loader.load();
+			AnchorPane anchorPane= null;
+			try {
+				anchorPane = loader.load();
+			} catch (IOException e) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Io exception");
+				alert.setContentText(e.getMessage());
+				alert.showAndWait();
+			}
 			Controller controller = loader.getController();
 			Scene scene = new Scene(anchorPane);
 			primaryStage.setScene(scene);
@@ -348,10 +432,17 @@ public class Controller{
 			txtOwner.setText("Login Failed");
 	}
 	
-	public void showOrders(ActionEvent event) throws SQLException {
+	public void showOrders(ActionEvent event) {
 		
 		MysqlCon con = new MysqlCon();
-		con.showOrder();
+		try {
+			con.showOrder();
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		LVProducts.setItems(Orders);
 		
 	}
@@ -372,59 +463,85 @@ public class Controller{
 		}
 	}
 	
-	public void addProduct(ActionEvent event) throws IOException{
+	public void addProduct(ActionEvent event) {
 	    
 		Stage primaryStage = new Stage();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource("/fxml/NewProductDetails.fxml"));
-		AnchorPane anchorPane=loader.load();
+		AnchorPane anchorPane= null;
+		try {
+			anchorPane = loader.load();
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Io exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		Controller controller = loader.getController();
 		Scene scene = new Scene(anchorPane);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
 	
-	public void addNewProduct(ActionEvent event) throws SQLException {
+	public void addNewProduct(ActionEvent event) {
 		
 		MysqlConOwner con = new MysqlConOwner();
-		con.addProduct(name.getText(), price.getText(), available.getText(), description.getText());
-	}
-	
-	public int getProductId(String s) {
-		
-		int id,p,j;
-		p=s.indexOf("\t");
-		String a="";
-		for(j=0;j<p;j++) {
-			a=a+s.charAt(j);
+		try {
+			con.addProduct(name.getText(), price.getText(), available.getText(), description.getText());
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
 		}
-		id=Integer.parseInt(a);
-		return id;
-		
 	}
 	
-	public void deleteProduct(MouseEvent event) throws SQLException {
+	public void deleteProduct(MouseEvent event){
 		
 		MysqlConOwner con = new MysqlConOwner();
-		String selected = LVOwner.getSelectionModel().getSelectedItem();
-		if(selected == null)
+		Integer selectedIndex = LVOwner.getSelectionModel().getSelectedIndex();
+		if(selectedIndex == null)
 			return;
-		int id=getProductId(selected);
-		con.deleteP(id);
+		int id = productsIdList.get(selectedIndex);
+
+		try {
+			con.deleteP(id);
+		} catch (SQLException e) {
+			System.out.println("ERRRRRROR: " + e.getMessage());
+
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Error deleting item");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 	}
 	
-	public void showAllOrders(ActionEvent event) throws SQLException {
+	public void showAllOrders(ActionEvent event){
 		
 		MysqlConOwner con = new MysqlConOwner();
-		con.showOrders();
+		try {
+			con.showOrders();
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Error showing orders");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		txt.setVisible(false);
 		LVOwner.setItems(AllOrders);
 	}
 	
-	public void showClients(ActionEvent event) throws SQLException {
+	public void showClients(ActionEvent event){
 		
 		MysqlConAdmin con = new MysqlConAdmin();
-		con.showCl();
+		try {
+			con.showCl();
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Error showing clients");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		LVAdmin.setItems(Clients);
 	}
 	
@@ -440,14 +557,21 @@ public class Controller{
 		return id;
 	}
 	
-	public void deleteClient(MouseEvent event) throws SQLException {
+	public void deleteClient(MouseEvent event) {
 		
 		MysqlConAdmin con = new MysqlConAdmin();
 		String selected = LVAdmin.getSelectionModel().getSelectedItem();
 		if(selected == null)
 			return;
 		int id=getClId(selected);
-		con.deleteCl(id);
+		try {
+			con.deleteCl(id);
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Error seleting users");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 	}
 	
 	public void addClient(ActionEvent event) throws IOException {
