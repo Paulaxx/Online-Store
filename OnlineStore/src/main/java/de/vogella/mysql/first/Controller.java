@@ -1,8 +1,9 @@
 package de.vogella.mysql.first;
 
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Optional;
 
 import javafx.collections.FXCollections;
@@ -16,6 +17,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Controller{
@@ -64,23 +67,37 @@ public class Controller{
 	
 	Stage primaryStageLog;
 	
-	public void show(ActionEvent event) throws SQLException {
+	public void show(ActionEvent event) {
 		
 		shop=1;
 		basket=0;
 		orders=0;
 		MysqlCon con = new MysqlCon();
-		con.showProducts();
+		try {
+			con.showProducts();
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		LVProducts.setItems(productsList);
 		txtShop.setVisible(true);
 	}
 	
-	public void show2(ActionEvent event) throws SQLException {
+	public void show2(ActionEvent event) {
 		
 		products=1;
 		order=0;
 		MysqlCon con = new MysqlCon();
-		con.showProducts();
+		try {
+			con.showProducts();
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 		txt.setVisible(true);
 		LVOwner.setItems(productsList);
 	}
@@ -206,7 +223,7 @@ public class Controller{
 		txtShop.setVisible(false);
 	}
 	
-	public void selected(MouseEvent event) throws SQLException {
+	public void selected(MouseEvent event) {
 		String selected = LVProducts.getSelectionModel().getSelectedItem();
 		System.out.println(selected);
 		if(selected == null) {
@@ -274,7 +291,14 @@ public class Controller{
 			orders=0;
 			MysqlCon con = new MysqlCon();
 			int id=selectedId+1;
-			con.orderDetails(id);
+			try {
+				con.orderDetails(id);
+			} catch (SQLException e) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Sql exception");
+				alert.setContentText(e.getMessage());
+				alert.showAndWait();
+			}
 			LVProducts.setItems(Details);
 		}
 		
@@ -511,7 +535,7 @@ public class Controller{
 		}
 	}
 	
-	public void deleteProduct(MouseEvent event) throws SQLException{
+	public void deleteProduct(MouseEvent event) {
 		
 		MysqlConOwner con = new MysqlConOwner();
 		Integer selectedIndex = LVOwner.getSelectionModel().getSelectedIndex();
@@ -533,8 +557,15 @@ public class Controller{
 			}
 		}
 		else if(order==1) {
-			
-			con.orderDetails(id);
+
+			try {
+				con.orderDetails(id);
+			} catch (SQLException e) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setHeaderText("Sql exception");
+				alert.setContentText(e.getMessage());
+				alert.showAndWait();
+			}
 			LVOwner.setItems(Details);
 		}
 
@@ -593,6 +624,8 @@ public class Controller{
 		try {
 			con.deleteCl(id);
 		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
 			alert.setHeaderText("Error seleting users");
 			alert.setContentText(e.getMessage());
@@ -690,37 +723,125 @@ public class Controller{
 		primaryStage.show();
 	}
 	
-	public void waiting(ActionEvent event) throws SQLException {
+	public void waiting(ActionEvent event) {
 		
 		String id=txtId.getText();
 		int idd=Integer.parseInt(id);
 		MysqlConOwner con = new MysqlConOwner();
-		con.changeStatus(idd, "Waiting");
-		
+		try {
+			con.changeStatus(idd, "Waiting");
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
+
 	}
 	
-	public void shipping(ActionEvent event) throws SQLException {
+	public void shipping(ActionEvent event) {
 		
 		String id=txtId.getText();
 		int idd=Integer.parseInt(id);
 		MysqlConOwner con = new MysqlConOwner();
-		con.changeStatus(idd, "Shipping");
+		try {
+			con.changeStatus(idd, "Shipping");
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 	}
 	
-	public void completed(ActionEvent event) throws SQLException {
+	public void completed(ActionEvent event) {
 		
 		String id=txtId.getText();
 		int idd=Integer.parseInt(id);
 		MysqlConOwner con = new MysqlConOwner();
-		con.changeStatus(idd, "Completed");
+		try {
+			con.changeStatus(idd, "Completed");
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 	}
 	
-	public void canceled(ActionEvent event) throws SQLException {
+	public void canceled(ActionEvent event){
 		
 		String id=txtId.getText();
 		int idd=Integer.parseInt(id);
 		MysqlConOwner con = new MysqlConOwner();
-		con.changeStatus(idd, "Canceled");
+		try {
+			con.changeStatus(idd, "Canceled");
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Sql exception");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 	}
 
+	public void doBackup(ActionEvent actionEvent) {
+		try {
+//			TextInputDialog dialog = new TextInputDialog("dump.sql");
+//			dialog.setContentText("Enter Path For Backup");
+//			Optional<String> result = dialog.showAndWait();
+//
+//			if(!result.isPresent())
+//				return;
+
+			Process process = Runtime.getRuntime().exec("mysqldump --databases store -R --triggers --user=admin --password=admin");
+
+			FileChooser fileChooser = new FileChooser();
+			File selectedFile = fileChooser.showOpenDialog(primaryStageLog);
+
+			if(!selectedFile.exists()){
+				selectedFile.createNewFile();
+			}
+
+			try (FileOutputStream outputStream = new FileOutputStream(selectedFile)) {
+
+				int read;
+				byte[] bytes = new byte[1024];
+
+				while ((read = process.getInputStream().read(bytes)) != -1) {
+					outputStream.write(bytes, 0, read);
+				}
+			}
+
+			System.out.println("Executed");
+		} catch (IOException e) {
+			System.out.println("Ewwor " + e.getMessage());
+		}
+	}
+
+	public void doRestore(ActionEvent actionEvent) {
+
+		FileChooser fileChooser = new FileChooser();
+		File selectedFile = fileChooser.showOpenDialog(primaryStageLog);
+		if(!selectedFile.exists())
+			return;
+
+		File f = new File("outttt.txt");
+		try {
+			f.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+			e.printStackTrace();
+		}
+
+		ProcessBuilder pb = new ProcessBuilder("mysql", "--user=admin", "--password=admin");
+		pb.redirectInput(selectedFile);
+		pb.redirectError(f);
+		try {
+			Process process = pb.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Success?");
+
+	}
 }

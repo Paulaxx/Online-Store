@@ -19,8 +19,8 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Backup">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Do" />
-                  <MenuItem mnemonicParsing="false" text="Restore" />
+                  <MenuItem mnemonicParsing="false" text="Do" onAction="#doBackup"/>
+                  <MenuItem mnemonicParsing="false" text="Restore" onAction="#doRestore"/>
                </items>
             </Menu>
         </menus>
