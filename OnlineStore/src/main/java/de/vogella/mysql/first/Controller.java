@@ -131,6 +131,8 @@ public class Controller{
 			else
 				lblStatus.setText("Login Failed");
 		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
 			alert.setHeaderText("Sql exception");
 			alert.setContentText(e.getMessage());
@@ -234,7 +236,7 @@ public class Controller{
 
 
 		if(shop==1) {
-			int id = productsIdList.get(selectedId);
+			int id = productsIdList.get(selectedId - 1);
 
 			TextInputDialog dialog = new TextInputDialog("amount");
 			dialog.setContentText("Please enter amount:");
@@ -541,7 +543,7 @@ public class Controller{
 		Integer selectedIndex = LVOwner.getSelectionModel().getSelectedIndex();
 		if(selectedIndex == null)
 			return;
-		int id = productsIdList.get(selectedIndex);
+		int id = productsIdList.get(selectedIndex - 1);
 		
 		if(products==1) {
 			
@@ -757,7 +759,14 @@ public class Controller{
 	public void completed(ActionEvent event) {
 		
 		String id=txtId.getText();
-		int idd=Integer.parseInt(id);
+		int idd;
+
+		try {
+			idd=Integer.parseInt(id);
+		} catch (NumberFormatException e) {
+			return;
+		}
+
 		MysqlConOwner con = new MysqlConOwner();
 		try {
 			con.changeStatus(idd, "Completed");
@@ -786,14 +795,8 @@ public class Controller{
 
 	public void doBackup(ActionEvent actionEvent) {
 		try {
-//			TextInputDialog dialog = new TextInputDialog("dump.sql");
-//			dialog.setContentText("Enter Path For Backup");
-//			Optional<String> result = dialog.showAndWait();
-//
-//			if(!result.isPresent())
-//				return;
 
-			Process process = Runtime.getRuntime().exec("mysqldump --databases store -R --triggers --user=admin --password=admin");
+			Process process = Runtime.getRuntime().exec("mysqldump --databases store -R --triggers --no-create-info  --flush-privileges --user=admin --password=admin");
 
 			FileChooser fileChooser = new FileChooser();
 			File selectedFile = fileChooser.showOpenDialog(primaryStageLog);
@@ -825,17 +828,8 @@ public class Controller{
 		if(!selectedFile.exists())
 			return;
 
-		File f = new File("outttt.txt");
-		try {
-			f.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-			e.printStackTrace();
-		}
-
 		ProcessBuilder pb = new ProcessBuilder("mysql", "--user=admin", "--password=admin");
 		pb.redirectInput(selectedFile);
-		pb.redirectError(f);
 		try {
 			Process process = pb.start();
 		} catch (IOException e) {
