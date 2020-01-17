@@ -288,11 +288,13 @@ public class Controller{
 				alert.setContentText(e.getMessage());
 				alert.showAndWait();
 			}
+
+			showCart(null);
 		}
 		else if(orders==1) {
 			orders=0;
 			MysqlCon con = new MysqlCon();
-			int id=selectedId+1;
+			int id=selectedId;
 			try {
 				con.orderDetails(id);
 			} catch (SQLException e) {
@@ -502,6 +504,8 @@ public class Controller{
 			alert.setContentText(e.getMessage());
 			alert.showAndWait();
 		}
+
+		showCart(null);
 	}
 	
 	public void addProduct(ActionEvent event) {
@@ -633,6 +637,8 @@ public class Controller{
 			alert.setContentText(e.getMessage());
 			alert.showAndWait();
 		}
+
+		showClients(null);
 	}
 	
 	public void addClient(ActionEvent event) throws IOException {
@@ -796,7 +802,7 @@ public class Controller{
 	public void doBackup(ActionEvent actionEvent) {
 		try {
 
-			Process process = Runtime.getRuntime().exec("mysqldump --databases store -R --triggers --no-create-info  --flush-privileges --user=admin --password=admin");
+			Process process = Runtime.getRuntime().exec("mysqldump --databases store --user=admin --password=admin");
 
 			FileChooser fileChooser = new FileChooser();
 			File selectedFile = fileChooser.showOpenDialog(primaryStageLog);
@@ -817,7 +823,7 @@ public class Controller{
 
 			System.out.println("Executed");
 		} catch (IOException e) {
-			System.out.println("Ewwor " + e.getMessage());
+			System.out.println("Error " + e.getMessage());
 		}
 	}
 

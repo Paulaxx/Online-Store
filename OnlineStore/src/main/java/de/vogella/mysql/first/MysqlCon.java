@@ -35,14 +35,14 @@ class MysqlCon{
     }
     
     public void showProducts() throws SQLException {
-    	String product="name"+"\t\t"+"amount"+"\t\t"+"price"+"\t\t"+"description";
+    	String product="id" + "\t\t" + "name"+"\t\t"+"amount"+"\t\t"+"price"+"\t\t"+"description";
     	Controller.productsList.removeAll(Controller.productsList);
     	Controller.productsIdList.clear();
     	Statement stmt=con.createStatement();  
 		ResultSet rs=stmt.executeQuery("select * from view_stock");
 		Controller.productsList.add(product);
 		while(rs.next()) {
-			product =rs.getString(2)+"\t\t"+rs.getString(3)+"\t\t"+rs.getString(4)+"\t\t"+rs.getString(5);
+			product =rs.getInt(1)+"\t\t" + rs.getString(2)+"\t\t"+rs.getString(3)+"\t\t"+rs.getString(4)+"\t\t"+rs.getString(5);
 			Controller.productsList.add(product);
 			Controller.productsIdList.add(rs.getInt(1));
 			product="";
@@ -132,7 +132,7 @@ class MysqlCon{
     	stmt2.setString(1, logEmail);
     	stmt2.setString(2, logPass);
     	stmt2.setInt(3, id);
-    	stmt2.execute(); 
+    	stmt2.execute();
     }
 
 	public void submitOrder() throws SQLException {
